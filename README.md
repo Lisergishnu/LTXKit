@@ -1,6 +1,10 @@
 # LTXKit
 Transmission Line Design Python Toolkit
 
+## Instalation
+
+Just copy LTXKit.py wherever you are working on.
+
 ## Usage
 
 From the Python interpreter:
