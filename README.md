@@ -3,9 +3,11 @@ Transmission Line Design Python Toolkit
 
 ## Usage
 
-From the python interpreter:
+From the Python interpreter:
 
-    import LTXKit
+```python
+import LTXKit
+```
   
 From there you can call the functions individually.
 
