@@ -8,6 +8,12 @@ From the Python interpreter:
 ```python
 import LTXKit
 ```
+
+or:
+
+```python
+from LTXKit import *
+```
   
 From there you can call the functions individually.
 
