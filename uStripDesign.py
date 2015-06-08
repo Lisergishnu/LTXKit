@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Marco Benzi <marco.benzi@alumnos.usm.cl>
 # @Date:   2015-06-07 19:44:12
-# @Last Modified 2015-06-07
-# @Last Modified time: 2015-06-07 20:46:26
+# @Last Modified 2015-06-08
+# @Last Modified time: 2015-06-08 00:30:46
 
 """"
 ==========================================================================
@@ -22,6 +22,22 @@ This program is free software: you can redistribute it and/or modify
 """
 
 import math
+
+def getEffectivePermitivity(WHratio, er):
+	"""
+	Returns the effective permitivity for a given W/H ratio.
+
+	This function assumes that the thickenss of conductors is insignificant.
+
+	Parameters:
+
+	- `WHratio` : W/H ratio.
+	- `er` : Relative permitivity of the dielectric.
+	"""
+	if WHratio <= 1:
+		return (er + 1)/2 + ((1 + 12/WHratio)**(-0.5) + 0.04*(1-WHratio)**2)*(er -1)/2
+	else:
+		return (er + 1)/2 + ((1 + 12/WHratio)**(-0.5))*(er -1)/2
 
 def getAuxVarA(Zo,er):
 	"""
@@ -81,6 +97,23 @@ def getWHRatioB(Zo,er):
 	B = getAuxVarB(Zo,er)
 	return (2/math.pi)*(B-1 - math.log(2*B - 1) + (er - 1)*(math.log(B-1) + 0.39 - 0.61/er)/(2*er))
 
+def getCharacteristicImpedance(WHratio, ef):
+	"""
+	Returns the characteristic impedance of the medium, based on the effective
+	permitivity and W/H ratio.
+
+	This function assumes that the thickenss of conductors is insignificant.
+
+	Parameters:
+
+	- `WHratio` : W/H ratio.
+	- `ef` : Effective permitivity of the dielectric.
+	"""
+	if WHratio <= 1:
+		return (60/math.sqrt(ef))*math.log(8/WHratio + WHratio/4)
+	else:
+		return (120*math.pi/math.sqrt(ef))/(WHratio + 1.393 + 0.667*math.log(WHratio +1.444))
+
 def getWHRatio(Zo,er):
 	"""
 	Returns the W/H ratio, after trying with the two possible set of solutions, 
@@ -93,10 +126,16 @@ def getWHRatio(Zo,er):
 	- `Zo` : Real impedance of the line.
 	- `er` : Relative permitivity of the dielectric.
 	"""
-	rA = getWHRatioA(Zo,er)
-	rB = getWHRatioB(Zo,er)
-	if rA < 2:
-		return rA
-	if rB > 2:
-		return rB
-	return 0
+	efa = er
+	efb = er
+	Zoa = Zo
+	Zob = Zo
+	while 1:
+		rA = getWHRatioA(Zoa,efa)
+		rB = getWHRatioB(Zob,efb)
+		if rA < 2:
+			return rA
+		if rB > 2:
+			return rB
+		Zoa = math.sqrt(efa)*Zoa
+		Zob = math.sqrt(efb)*Zob
