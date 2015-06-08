@@ -21,4 +21,10 @@ from LTXKit import *
   
 From there you can call the functions individually.
 
+## Documentation
+
+You can find the [API here](http://lisergishnu.github.io/LTXKit/).
+
+## Contributing
+
 Currently the toolkit only has functions related to microstrip lines. Contributions appreciated via pull requests.
