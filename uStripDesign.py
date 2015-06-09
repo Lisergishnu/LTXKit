@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Marco Benzi <marco.benzi@alumnos.usm.cl>
 # @Date:   2015-06-07 19:44:12
-# @Last Modified 2015-06-08
-# @Last Modified time: 2015-06-08 22:49:48
+# @Last Modified 2015-06-09
+# @Last Modified time: 2015-06-09 03:17:23
 
 
 # ==========================================================================
@@ -22,6 +22,19 @@
 
 
 import math
+
+"""
+Speed of light constant
+"""
+c = 3E8
+"""
+Vacuum permittivity
+"""
+e0 = 8.8541E-12
+"""
+Vacuum permeability
+"""
+u0 = 4E-7*math.pi
 
 def getEffectivePermitivity(WHratio, er):
 	"""
@@ -139,3 +152,59 @@ def getWHRatio(Zo,er):
 			return rB
 		Zoa = math.sqrt(efa)*Zoa
 		Zob = math.sqrt(efb)*Zob
+def getCorrectedWidth(W,H,t):
+	"""
+	For significant conductor thickness, this returns the corrected width.
+
+	Paramenters:
+
+	- `W` : Width
+	- `H` : Height
+	- `t` : Conductor thickness
+	"""
+	if t < H and t < W/2:
+		if W/H <= math.pi/2:
+			return W + (1 + math.log(2*H/t))*(t/math.pi)
+		else:
+			return W + (1 + math.log(4*math.pi*H/t))*(t/math.pi)
+	else:
+		print "The conductor is too thick!!"
+
+def getConductorLoss(W,H,t,sigma,f,Zo):
+	"""
+	Returns the conductor loss in [Np/m].
+
+	Parameters:
+
+	- `W` : Width
+	- `H` : Height
+	- `t` : Conductor thickness
+	- `sigma` : Conductance of medium
+	- `f` : Operating frequency
+	- `Zo` : Characteristic impedance
+	"""
+	We = getCorrectedWidth(W,H,t)
+	P = 1 - (We/4/H)**2
+	Rs = math.sqrt((math.pi*f*u0/sigma))
+	Q = 1 + H/We + (math.log(2*H/t)-t/W)*H/(We*math.pi)
+
+	if W/H <= 1/(2*math.pi):
+		return (1 + H/We + (math.log(4*pi*W/t) + t/W)*H/(math.pi*We))*(8.68*Rs*P)/(2*pi*Zo*H)
+	elif W/H <= 2:
+		return (8.68*Rs*P*Q)/(2*math.pi*Zo*H)
+	else:
+		return ((8.68*Rs*Q)/(Zo*H))*(We/H + (We/math.pi/H)/(We/2/H)+0.94)*((H/We + 2*math.log(We/2/H + 0.94)/math.pi)**(-2))
+
+def getDielectricLoss(er,ef,tanD,f):
+	"""
+	Returns the dielectric loss in [dB/cm].
+
+	Paramenters:
+
+	- `er` : Relative permitivity of the dielectric
+	- `ef` : Effective permitivity
+	- `tanD` : tan \delta
+	- `f` : Operating frequency
+	"""
+	lam = c/math.sqrt(ef)/f
+	return 27.3*(er*(ef-1)*tanD)/(lam*math.sqrt(er)*(er-1)) 		

@@ -3,7 +3,7 @@
 # @Author: Marco Benzi <marco.benzi@alumnos.usm.cl>
 # @Date:   2015-06-08 17:35:52
 # @Last Modified 2015-06-08
-# @Last Modified time: 2015-06-08 22:50:03
+# @Last Modified time: 2015-06-08 23:54:14
 
 
 # ==========================================================================
@@ -27,7 +27,7 @@ import math
 """
 Speed of light constant
 """
-c = 299792458
+c = 3E8
 """
 Vacuum permittivity
 """
@@ -59,7 +59,7 @@ def getWaveNumber2(omega,ur,er):
 
 	Parameters:
 
-	- `omega` : Angular velocity
+	- `omega` : Angular speed
 	- `ur` : Relative permeability
 	- `er` : Relative permittivity
 	"""
@@ -144,7 +144,7 @@ def getSurfaceResistivity(omega,ur,sigma):
 
 	Parameters:
 
-	- `omega` : Operating frequency
+	- `omega` : Operating angular speed
 	- `ur` : Relative permeability
 	- `sigma` :  Conductivity of material
 	"""
@@ -166,3 +166,26 @@ def getConductionLossTE10(Rs,beta,k,a,b,ur,er):
 	"""
 	n = math.sqrt((ur*u0)/(er*e0))
 	return Rs*(2*b*math.pi**2 + a**3 * k**2)/(a**3 * b * beta * k * n)
+
+def getCharacteristicWaveImpedance(ur,er,fc,f):
+	"""
+	Returns the characteristic wave impedance.
+
+	Parameters:
+
+	- `ur` : Relative permeability
+	- `er`: Relative permittivity
+	- `fc`: Cutoff frequency
+	- `f` : Operating frecuency
+	"""
+	n = math.sqrt((ur*u0)/(er*e0))
+	return n/math.sqrt(1 - (fc/f)**2)
+
+def getVSWR(RC):
+	"""
+	Returns the Voltage Standing Wave Ratio (VSWR)
+
+	Parameters:
+	- `RC` : Reflection coefficient
+	"""
+	return (1+math.fabs(RC))/(1-math.fabs(RC))
