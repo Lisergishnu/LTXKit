@@ -2,7 +2,7 @@
 # @Author: Marco Benzi <marco.benzi@alumnos.usm.cl>
 # @Date:   2015-06-07 19:44:12
 # @Last Modified 2015-06-09
-# @Last Modified time: 2015-06-09 03:17:23
+# @Last Modified time: 2015-06-09 16:07:05
 
 
 # ==========================================================================
@@ -185,8 +185,8 @@ def getConductorLoss(W,H,t,sigma,f,Zo):
 	"""
 	We = getCorrectedWidth(W,H,t)
 	P = 1 - (We/4/H)**2
-	Rs = math.sqrt((math.pi*f*u0/sigma))
-	Q = 1 + H/We + (math.log(2*H/t)-t/W)*H/(We*math.pi)
+	Rs = math.sqrt((math.pi*f*u0)/sigma)
+	Q = 1 + H/We + (math.log((2*H)/t)-t/W)*H/(We*math.pi)
 
 	if W/H <= 1/(2*math.pi):
 		return (1 + H/We + (math.log(4*pi*W/t) + t/W)*H/(math.pi*We))*(8.68*Rs*P)/(2*pi*Zo*H)
